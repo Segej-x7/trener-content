@@ -5,45 +5,64 @@
 
 // ============================================
 // БАЗОВЫЙ URL
-// Приоритет: AndroidBridge → ?base= → localStorage → location.origin
+// Приоритет:
+//   1. AndroidBridge.getBaseUrl()  — для WebView-обёртки
+//   2. ?base=... в URL             — для отладки/переопределения
+//   3. Автодетект GitHub Pages     — берём имя репозитория из пути
+//   4. localStorage                — сохранённое значение
+//   5. location.origin             — fallback
 // ============================================
 const BASE_URL = (() => {
-    // 1. AndroidBridge (WebView-обёртка)
+    // 1. Android Bridge
     if (window.AndroidBridge && typeof window.AndroidBridge.getBaseUrl === 'function') {
         const base = window.AndroidBridge.getBaseUrl();
         if (base) {
             const clean = base.replace(/\/+$/, '');
             localStorage.setItem('appBaseUrl', clean);
+            console.log('🌐 BASE_URL из AndroidBridge:', clean);
             return clean;
         }
     }
+
     // 2. Query-параметр ?base=
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get('base');
     if (fromQuery) {
         const clean = fromQuery.replace(/\/+$/, '');
         localStorage.setItem('appBaseUrl', clean);
+        console.log('🌐 BASE_URL из query:', clean);
         return clean;
     }
-    // 3. GitHub Pages: автодетект имени репозитория из пути
+
+    // 3. Автодетект GitHub Pages
+    //    Если домен заканчивается на github.io — берём первый сегмент пути
+    //    как имя репозитория: /trener-content/ → /trener-content
     if (location.hostname.endsWith('github.io')) {
         const parts = location.pathname.split('/').filter(Boolean);
         if (parts.length > 0) {
             const auto = `${location.origin}/${parts[0]}`;
             localStorage.setItem('appBaseUrl', auto);
+            console.log('🌐 BASE_URL автодетект (GitHub Pages):', auto);
             return auto;
         }
     }
-    // 4. Сохранённое значение (локальная разработка)
+
+    // 4. localStorage (локальная разработка)
     const saved = localStorage.getItem('appBaseUrl');
-    if (saved) return saved.replace(/\/+$/, '');
+    if (saved) {
+        console.log('🌐 BASE_URL из localStorage:', saved);
+        return saved.replace(/\/+$/, '');
+    }
+
     // 5. Fallback
+    console.log('🌐 BASE_URL fallback:', location.origin);
     return location.origin;
 })();
 
 function url(path) {
     return `${BASE_URL}/${path.replace(/^\/+/, '')}`;
 }
+
 console.log('🌐 BASE_URL =', BASE_URL);
 
 // ============================================
