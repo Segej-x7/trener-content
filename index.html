@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta name="theme-color" content="#3454b4">
+    <meta name="description" content="Тренажёр HTML, CSS и JavaScript">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Тренажёр">
+
+    <link rel="manifest" href="./manifest.json">
+    <link rel="icon" type="image/png" sizes="192x192" href="./icon-192.png">
+    <link rel="apple-touch-icon" href="./icon-192.png">
+
+    <title>Тренажёр HTML, CSS & JS</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app-container">
+
+        <!-- ============ ЭКРАН 1: ГЛАВНОЕ МЕНЮ ============ -->
+        <div id="menu-screen">
+            <header>
+                <h1>🎨 Тренажёр CSS & JS</h1>
+                <p>Выберите категорию и тему для теста</p>
+                <div id="time-status" class="time-status"></div>
+            </header>
+
+            <button id="open-sites-btn" class="primary-btn">🌐 Перейти к сайтам</button>
+
+            <div class="category-section">
+                <button class="category-header" data-target="html-topics">
+                    <span class="arrow">▶</span>
+                    <span>HTML</span>
+                </button>
+                <div class="topic-list collapsed" id="html-topics"></div>
+            </div>
+
+            <div class="category-section">
+                <button class="category-header" data-target="css-topics">
+                    <span class="arrow">▶</span>
+                    <span>CSS</span>
+                </button>
+                <div class="topic-list collapsed" id="css-topics"></div>
+            </div>
+
+            <div class="category-section">
+                <button class="category-header" data-target="js-topics">
+                    <span class="arrow">▶</span>
+                    <span>JavaScript</span>
+                </button>
+                <div class="topic-list collapsed" id="js-topics"></div>
+            </div>
+        </div>
+
+        <!-- ============ ЭКРАН 2: ТЕСТ ============ -->
+        <div id="quiz-screen" class="hidden">
+            <header>
+                <button id="back-btn" class="back-btn">← Назад к темам</button>
+                <h1 id="quiz-title"></h1>
+                <p id="test-description"></p>
+            </header>
+
+            <main id="quiz-container"></main>
+
+            <div class="actions">
+                <button id="check-btn">Проверить ответы</button>
+                <button id="reset-btn" style="display:none;">Пройти заново</button>
+            </div>
+
+            <div id="result-container" class="hidden">
+                <h2>Результат</h2>
+                <div id="score-display"></div>
+                <div id="detailed-results"></div>
+            </div>
+        </div>
+
+        <!-- ============ ЭКРАН 3: САЙТЫ ============ -->
+        <div id="sites-screen" class="hidden">
+            <header>
+                <button id="sites-back-btn" class="back-btn">← Назад к темам</button>
+                <h1>🌐 Доступные ресурсы</h1>
+                <p>Пройдите тесты, соблюдайте расписание и находитесь в нужной точке</p>
+                <div id="geo-status" class="geo-status"></div>
+            </header>
+
+            <main id="sites-list"></main>
+        </div>
+
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ЗАГРУЗКА ВСЕГО КОНТЕНТА С СЕРВЕРА            -->
+    <!-- ============================================ -->
+    <script src="registry.js"></script>
+    <script src="app.js"></script>
+
+    <!-- PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js')
+                    .then(reg => console.log('✅ SW зарегистрирован'))
+                    .catch(err => console.error('❌ Ошибка SW:', err));
+            });
+        }
+    </script>
+</body>
+</html>

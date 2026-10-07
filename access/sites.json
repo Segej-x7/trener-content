@@ -1,0 +1,63 @@
+{
+  "sites": [
+    {
+      "id": "example",
+      "url": "https://example.com",
+      "name": "Example.com",
+      "icon": "🌐",
+      "limitMs": 300000,
+      "requiredTestIds": ["html-basics"],
+      "geofence": null,
+      "schedule": null
+    },
+    {
+      "id": "wikipedia",
+      "url": "https://wikipedia.org",
+      "name": "Wikipedia",
+      "icon": "📚",
+      "limitMs": 600000,
+      "requiredTestIds": ["html-basics", "html-formatting"],
+      "geofence": {
+        "lat": 55.751244,
+        "lon": 37.618423,
+        "radiusMeters": 200,
+        "label": "Красная площадь, Москва"
+      },
+      "schedule": {
+        "days": [1, 2, 3, 4, 5],
+        "from": "09:00",
+        "to": "18:00",
+        "timezone": "Europe/Moscow"
+      }
+    },
+    {
+      "id": "mdn",
+      "url": "https://developer.mozilla.org",
+      "name": "MDN Web Docs",
+      "icon": "💻",
+      "limitMs": 900000,
+      "requiredTestIds": ["html-basics", "css-basics", "js-basics"],
+      "geofence": {
+        "lat": 59.931059,
+        "lon": 30.360909,
+        "radiusMeters": 500,
+        "label": "Санкт-Петербург, центр"
+      },
+      "schedule": {
+        "days": [0, 1, 2, 3, 4, 5, 6],
+        "from": "08:00",
+        "to": "22:00",
+        "timezone": "Europe/Moscow"
+      }
+    }
+  ],
+
+  "globalBlockDurationMs": 7200000,
+  "allowParallelOpen": false,
+
+  "geolocation": {
+    "timeoutMs": 10000,
+    "maximumAge": 60000,
+    "enableHighAccuracy": true
+  }
+}
