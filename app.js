@@ -8,21 +8,36 @@
 // Приоритет: AndroidBridge → ?base= → localStorage → location.origin
 // ============================================
 const BASE_URL = (() => {
+    // 1. AndroidBridge (WebView-обёртка)
     if (window.AndroidBridge && typeof window.AndroidBridge.getBaseUrl === 'function') {
         const base = window.AndroidBridge.getBaseUrl();
         if (base) {
-            localStorage.setItem('appBaseUrl', base);
-            return base.replace(/\/+$/, '');
+            const clean = base.replace(/\/+$/, '');
+            localStorage.setItem('appBaseUrl', clean);
+            return clean;
         }
     }
+    // 2. Query-параметр ?base=
     const params = new URLSearchParams(window.location.search);
     const fromQuery = params.get('base');
     if (fromQuery) {
-        localStorage.setItem('appBaseUrl', fromQuery);
-        return fromQuery.replace(/\/+$/, '');
+        const clean = fromQuery.replace(/\/+$/, '');
+        localStorage.setItem('appBaseUrl', clean);
+        return clean;
     }
+    // 3. GitHub Pages: автодетект имени репозитория из пути
+    if (location.hostname.endsWith('github.io')) {
+        const parts = location.pathname.split('/').filter(Boolean);
+        if (parts.length > 0) {
+            const auto = `${location.origin}/${parts[0]}`;
+            localStorage.setItem('appBaseUrl', auto);
+            return auto;
+        }
+    }
+    // 4. Сохранённое значение (локальная разработка)
     const saved = localStorage.getItem('appBaseUrl');
     if (saved) return saved.replace(/\/+$/, '');
+    // 5. Fallback
     return location.origin;
 })();
 
